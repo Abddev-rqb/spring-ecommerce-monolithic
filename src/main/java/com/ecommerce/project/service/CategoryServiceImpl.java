@@ -1,7 +1,9 @@
 package com.ecommerce.project.service;
 
 import com.ecommerce.project.model.Category;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,24 +27,21 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public String deleteCategory(Long id){
-        Category category = categories.stream().filter(c -> c.getCategoryId().equals(id)).findFirst().orElse(null);
+        Category category = categories.stream().filter(c -> c.getCategoryId().equals(id))
+                .findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource Not Found"));
         categories.remove(category);
-        if (category == null){
-            return null;
-        }
         return "Category Id "+id+" deleted Successfullly";
     }
 
     @Override
-    public String updateCategory(Category category, Long id){
+    public Category updateCategory(Category category, Long id){
         Optional<Category> categoryOptional = categories.stream().filter(c -> c.getCategoryId().equals(id)).findFirst();
         if (categoryOptional.isPresent()){
             Category existingCategory = categoryOptional.get();
             existingCategory.setCategoryName(category.getCategoryName());
-            return "Updated Successfully";
+            return existingCategory;
         }else {
-            return "No resource found";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Category Not Found");
         }
-
     }
 }
