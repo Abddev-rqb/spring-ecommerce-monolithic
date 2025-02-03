@@ -30,4 +30,9 @@ public class CategoryController {
     public void deleteCategory(@PathVariable Long id){
         categoryService.deleteCategory(id);
     }
+
+    @PutMapping("api/admin/category/{id}")
+    public void updateCategory(@RequestBody Category category, @PathVariable Long id){
+        categoryService.updateCategory(category, id);
+    }
 }

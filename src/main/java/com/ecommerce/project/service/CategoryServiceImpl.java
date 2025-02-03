@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService{
@@ -30,5 +31,18 @@ public class CategoryServiceImpl implements CategoryService{
             return null;
         }
         return "Category Id "+id+" deleted Successfullly";
+    }
+
+    @Override
+    public String updateCategory(Category category, Long id){
+        Optional<Category> categoryOptional = categories.stream().filter(c -> c.getCategoryId().equals(id)).findFirst();
+        if (categoryOptional.isPresent()){
+            Category existingCategory = categoryOptional.get();
+            existingCategory.setCategoryName(category.getCategoryName());
+            return "Updated Successfully";
+        }else {
+            return "No resource found";
+        }
+
     }
 }
