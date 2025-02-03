@@ -13,24 +13,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("api/")
 public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
 
-    @GetMapping("api/public/categories")
+    @GetMapping("public/categories")
     public ResponseEntity<List<Category>> getAllCategories(){
         List<Category> status = categoryService.getAllCategories();
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
-    @PostMapping("api/admin/category")
+    @PostMapping("admin/category")
     public ResponseEntity<String> addCategory(@RequestBody Category category){
             categoryService.addCategory(category);
             return new ResponseEntity<>("Created Successfully", HttpStatus.OK);
     }
 
-    @DeleteMapping("api/admin/category/{id}")
+    @DeleteMapping("admin/category/{id}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long id){
         try{
             String status = categoryService.deleteCategory(id);
@@ -40,7 +41,7 @@ public class CategoryController {
         }
     }
 
-    @PutMapping("api/admin/category/{id}")
+    @PutMapping("admin/category/{id}")
     public ResponseEntity<Category> updateCategory(@RequestBody Category category, @PathVariable Long id){
             Category status = categoryService.updateCategory(category, id);
             return new ResponseEntity<>(status, HttpStatus.OK);
