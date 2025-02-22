@@ -8,10 +8,13 @@ import com.ecommerce.project.payload.CategoryResponse;
 import com.ecommerce.project.repositories.CategoryRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,8 +28,10 @@ public class CategoryServiceImpl implements CategoryService{
     private ModelMapper modelMapper;
 
     @Override
-    public CategoryResponse getAllCategories(){
-        List<Category> category = categoryRepository.findAll();
+    public CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize){
+        PageRequest pageDetails = PageRequest.of(pageNumber, pageSize);
+        Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
+        List<Category> category = categoryPage.getContent();
         if (category.isEmpty()){
             throw new APIException("No Category available");
         }
