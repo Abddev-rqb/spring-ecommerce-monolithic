@@ -17,9 +17,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // generates auto Id in the DB ie.,IDENTITY
     private Long categoryId;
-    @NotBlank
+    @NotBlank // validates whether it is blank or not passed args
     @Size(min=3, message = "Should consist atleast 3 characters")
     private String categoryName;
 }

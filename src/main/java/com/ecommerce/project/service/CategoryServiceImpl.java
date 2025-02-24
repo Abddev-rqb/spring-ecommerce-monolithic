@@ -17,20 +17,20 @@ import java.util.List;
 @Service
 public class CategoryServiceImpl implements CategoryService{
 
-    @Autowired
+    @Autowired // inOrder to skip NoArgsConstructor
     private CategoryRepository categoryRepository;
     @Autowired
     private ModelMapper modelMapper;
 
     @Override
     public CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize){
-        PageRequest pageDetails = PageRequest.of(pageNumber, pageSize);
-        Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
+        PageRequest pageDetails = PageRequest.of(pageNumber, pageSize); // pageRequest requests saved contents according to the page Number and page Size
+        Page<Category> categoryPage = categoryRepository.findAll(pageDetails);// retrieve categories according to the page number and page size
         List<Category> category = categoryPage.getContent();
         if (category.isEmpty()){
             throw new APIException("No Category available");
         }
-        List<CategoryDTO> categoryDTOS = category.stream().map(category1 -> modelMapper.map(category1, CategoryDTO.class)).toList();
+        List<CategoryDTO> categoryDTOS = category.stream().map(category1 -> modelMapper.map(category1, CategoryDTO.class)).toList(); // converts the Category into DTO and storing as immutable list
         CategoryResponse categoryResponse = new CategoryResponse();
         categoryResponse.setContent(categoryDTOS);
         categoryResponse.setPageNumber(categoryPage.getNumber());
@@ -43,13 +43,13 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public CategoryDTO addCategory(CategoryDTO category) {
-        Category category2 = modelMapper.map(category, Category.class);
-        Category category1 = categoryRepository.findByCategoryName(category.getCategoryName());
+        Category category2 = modelMapper.map(category, Category.class);// converts the DTO into category
+        Category category1 = categoryRepository.findByCategoryName(category.getCategoryName()); // using the findByCategoryName get the category name from the repo.func.
         if (category1 != null){
             throw new APIException("Category name with "+"'"+category.getCategoryName()+"'"+" already exists");
         }
         Category savedCategory = categoryRepository.save(category2);
-        CategoryDTO categoryDTO = modelMapper.map(savedCategory, CategoryDTO.class);
+        CategoryDTO categoryDTO = modelMapper.map(savedCategory, CategoryDTO.class); // converts the category into DTO
         return categoryDTO;
     }
 

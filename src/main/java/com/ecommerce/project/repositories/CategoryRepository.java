@@ -4,5 +4,5 @@ import com.ecommerce.project.model.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    Category findByCategoryName(String categoryName);
+    Category findByCategoryName(String categoryName); // findByCategoryName is created by user and it is custom function to find by name
 }

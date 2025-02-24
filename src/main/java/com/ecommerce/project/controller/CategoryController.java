@@ -13,18 +13,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/")
 public class CategoryController {
 
-    @Autowired
+    @Autowired // inOrder to skip NoArgsConstructor
     private CategoryService categoryService;
 
     @GetMapping("/public/categories")
     public ResponseEntity<CategoryResponse> getAllCategories(@RequestParam(name= "pageNumber")Integer pageNumber,
-                                                             @RequestParam(name = "pageSize")Integer pageSize){
+                                                             @RequestParam(name = "pageSize")Integer pageSize){ // retrieves the response body with CategoryResponse which contains list of DTOs
         CategoryResponse status = categoryService.getAllCategories(pageNumber, pageSize);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
     @PostMapping("/admin/category")
-    public ResponseEntity<CategoryDTO> addCategory(@Valid @RequestBody CategoryDTO category){
+    public ResponseEntity<CategoryDTO> addCategory(@Valid @RequestBody CategoryDTO category){// retrieves the response body with CategoryDTO which contains list of DB mapped entities
+        //@Valid validates the double entries into DB
             CategoryDTO categoryDTO = categoryService.addCategory(category);
             return new ResponseEntity<>(categoryDTO, HttpStatus.OK);
     }
