@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,8 +24,9 @@ public class CategoryServiceImpl implements CategoryService{
     private ModelMapper modelMapper;
 
     @Override
-    public CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize){
-        PageRequest pageDetails = PageRequest.of(pageNumber, pageSize); // pageRequest requests saved contents according to the page Number and page Size
+    public CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize,  String sortBy, String sortDir){
+        Sort sorting = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending(): Sort.by(sortBy).descending();
+        PageRequest pageDetails = PageRequest.of(pageNumber, pageSize, sorting); // pageRequest requests saved contents according to the page Number and page Size
         Page<Category> categoryPage = categoryRepository.findAll(pageDetails);// retrieve categories according to the page number and page size
         List<Category> category = categoryPage.getContent();
         if (category.isEmpty()){
