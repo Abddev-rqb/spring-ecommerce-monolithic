@@ -31,8 +31,14 @@ public class ProductController {
     }
 
     @GetMapping("/public/category/{categoryId}/product")
-    private ResponseEntity<ProductResponse> searchByCatId(@PathVariable Category categoryId){
+    private ResponseEntity<ProductResponse> getByCatId(@PathVariable Category categoryId){
         ProductResponse productResponse = productService.searchByCatId(categoryId);
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/public/products/keyword/{keyword}")
+    private ResponseEntity<ProductResponse> getProductByKeyword(@PathVariable String keyword){
+        ProductResponse productResponse = productService.searchProductByKeyword(keyword);
+        return new ResponseEntity<>(productResponse, HttpStatus.FOUND);
     }
 }
