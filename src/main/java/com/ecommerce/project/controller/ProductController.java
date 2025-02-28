@@ -1,6 +1,7 @@
 package com.ecommerce.project.controller;
 
 
+import com.ecommerce.project.model.Category;
 import com.ecommerce.project.model.Product;
 import com.ecommerce.project.payload.ProductDTO;
 import com.ecommerce.project.payload.ProductResponse;
@@ -26,6 +27,12 @@ public class ProductController {
     @GetMapping("/public/products")
     private ResponseEntity<ProductResponse> getProducts(){
         ProductResponse productResponse = productService.getProduct();
+        return new ResponseEntity<>(productResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/public/category/{categoryId}/product")
+    private ResponseEntity<ProductResponse> searchByCatId(@PathVariable Category categoryId){
+        ProductResponse productResponse = productService.searchByCatId(categoryId);
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 }

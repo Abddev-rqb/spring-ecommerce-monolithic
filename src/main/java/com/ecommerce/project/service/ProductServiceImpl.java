@@ -29,7 +29,7 @@ public class ProductServiceImpl implements ProductService{
         product.setImage("default.png");
         product.setCategory(category);
         double specialPrice = product.getPrice() -((product.getDiscount() * 0.01) * product.getPrice());
-        product.setDiscount(specialPrice);
+        product.setSpecialPrice(specialPrice);
         Product savedProduct = productRepository.save(product);
         return modelMapper.map(savedProduct, ProductDTO.class);
     }
@@ -37,6 +37,15 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public ProductResponse getProduct(){
         List<Product> products = productRepository.findAll();
+        List<ProductDTO> productDTOS = products.stream().map(product -> modelMapper.map(product, ProductDTO.class)).toList();
+        ProductResponse response = new ProductResponse();
+        response.setContent(productDTOS);
+        return response;
+    }
+
+    @Override
+    public ProductResponse searchByCatId(Category categoryId){
+        List<Product> products = productRepository.findByCategoryOrderByPriceAsc(categoryId);
         List<ProductDTO> productDTOS = products.stream().map(product -> modelMapper.map(product, ProductDTO.class)).toList();
         ProductResponse response = new ProductResponse();
         response.setContent(productDTOS);
