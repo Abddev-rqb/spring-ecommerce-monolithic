@@ -79,20 +79,37 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ProductResponse searchByCatId(Category categoryId){
-        List<Product> products = productRepository.findByCategoryOrderByPriceAsc(categoryId);
+    public ProductResponse searchByCatId(Long categoryId, Integer pageNumber, Integer pageSize, String sortBy, String sortdir){
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
+        Sort sort = sortdir.equalsIgnoreCase(sortdir) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        PageRequest request = PageRequest.of(pageNumber, pageSize, sort);
+        Page<Product> productSort = productRepository.findByCategoryOrderByPriceAsc(category, request);
+        List<Product> products = productSort.getContent();
         List<ProductDTO> productDTOS = products.stream().map(product -> modelMapper.map(product, ProductDTO.class)).toList();
         ProductResponse response = new ProductResponse();
         response.setContent(productDTOS);
+        response.setPageNumber(productSort.getNumber());
+        response.setPageSize(productSort.getSize());
+        response.setTotalElements(productSort.getTotalElements());
+        response.setTotalPages(productSort.getTotalPages());
+        response.setLastPage(productSort.isLast());
         return response;
     }
 
     @Override
-    public ProductResponse searchProductByKeyword(String keyword) {
-        List<Product> products = productRepository.findByProductNameLikeIgnoreCase('%'+keyword+'%'); // select query "findBy", searchBy "ProductName", pattern matching "Like", function "ignore Case".
+    public ProductResponse searchProductByKeyword(String keyword, Integer pageNumber, Integer pageSize, String sortBy, String sortdir) {
+        Sort sort = sortdir.equalsIgnoreCase(sortdir) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        PageRequest request = PageRequest.of(pageNumber, pageSize, sort);
+        Page<Product> productPage = productRepository.findByProductNameLikeIgnoreCase('%'+keyword+'%', request); // select query "findBy", searchBy "ProductName", pattern matching "Like", function "ignore Case".
+        List<Product> products = productPage.getContent();
         List<ProductDTO> productDTO = products.stream().map(product -> modelMapper.map(product, ProductDTO.class)).toList();
         ProductResponse response = new ProductResponse();
         response.setContent(productDTO);
+        response.setPageNumber(productPage.getNumber());
+        response.setPageSize(productPage.getSize());
+        response.setTotalElements(productPage.getTotalElements());
+        response.setTotalPages(productPage.getTotalPages());
+        response.setLastPage(productPage.isLast());
         return response;
     }
 

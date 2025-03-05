@@ -11,8 +11,8 @@ import java.io.IOException;
 public interface ProductService {
     ProductDTO addProduct(Long categoryId, ProductDTO productDTO);
     ProductResponse getProduct(Integer pageNumber, Integer pageSize, String sortBy, String sortdir);
-    ProductResponse searchByCatId(Category categoryId);
-    ProductResponse searchProductByKeyword(String keyword);
+    ProductResponse searchByCatId(Long categoryId, Integer pageNumber, Integer pageSize, String sortBy, String sortdir);
+    ProductResponse searchProductByKeyword(String keyword, Integer pageNumber, Integer pageSize, String sortBy, String sortdir);
     ProductDTO updateProductById(ProductDTO productDTO, Long productId);
     ProductDTO deleteProductById(Long productId);
     ProductDTO updateImage(Long productId, MultipartFile image) throws IOException;
