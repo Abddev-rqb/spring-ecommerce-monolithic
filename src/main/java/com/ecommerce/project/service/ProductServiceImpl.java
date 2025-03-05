@@ -1,6 +1,7 @@
 package com.ecommerce.project.service;
 
 
+import com.ecommerce.project.exception.APIException;
 import com.ecommerce.project.exception.ResourceNotFoundException;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.model.Product;
@@ -11,17 +12,14 @@ import com.ecommerce.project.repositories.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -40,21 +38,43 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public ProductDTO addProduct(Long categoryId, ProductDTO productDTO){
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
-        Product product = modelMapper.map(productDTO, Product.class);
-        product.setImage("default.png");
-        product.setCategory(category);
-        double specialPrice = product.getPrice() -((product.getDiscount() * 0.01) * product.getPrice());
-        product.setSpecialPrice(specialPrice);
-        Product savedProduct = productRepository.save(product);
-        return modelMapper.map(savedProduct, ProductDTO.class);
+        boolean isproductNotPresent = true;
+        List<Product> products = category.getProducts();
+        for (int i = 0; i < products.size(); i++) {
+            if (products.get(i).getProductName().equalsIgnoreCase(productDTO.getProductName())){
+                isproductNotPresent = false;
+            }
+        }
+        if (isproductNotPresent) {
+            Product product = modelMapper.map(productDTO, Product.class);
+            product.setImage("default.png");
+            product.setCategory(category);
+            double specialPrice = product.getPrice() - ((product.getDiscount() * 0.01) * product.getPrice());
+            product.setSpecialPrice(specialPrice);
+            Product savedProduct = productRepository.save(product);
+            return modelMapper.map(savedProduct, ProductDTO.class);
+        }else{
+            throw new APIException("Product name with "+"'"+productDTO.getProductName()+"'"+" already exists");
+        }
     }
 
     @Override
-    public ProductResponse getProduct(){
-        List<Product> products = productRepository.findAll();
+    public ProductResponse getProduct(Integer pageNumber, Integer pageSize, String sortBy, String sortdir){
+        Sort sort = sortdir.equalsIgnoreCase(sortdir) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+        Page<Product> products = productRepository.findAll(pageRequest);
+        List<Product> products1 = products.getContent();
+        if (products1.isEmpty()){
+            throw new APIException("No products are available");
+        }
         List<ProductDTO> productDTOS = products.stream().map(product -> modelMapper.map(product, ProductDTO.class)).toList();
         ProductResponse response = new ProductResponse();
         response.setContent(productDTOS);
+        response.setPageNumber(products.getNumber());
+        response.setPageSize(products.getSize());
+        response.setTotalElements(products.getTotalElements());
+        response.setTotalPages(products.getTotalPages());
+        response.setLastPage(products.isLast());
         return response;
     }
 
