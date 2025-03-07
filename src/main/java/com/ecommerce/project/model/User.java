@@ -49,7 +49,7 @@ public class User {
 
     @Setter
     @Getter
-    @ManyToMany(mappedBy = "users", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "user_address",
             joinColumns = @JoinColumn(name ="user_id"),
