@@ -16,4 +16,6 @@ public interface ProductService {
     ProductDTO updateProductById(ProductDTO productDTO, Long productId);
     ProductDTO deleteProductById(Long productId);
     ProductDTO updateImage(Long productId, MultipartFile image) throws IOException;
+
+    ProductDTO updateProduct(Long productId, ProductDTO productDTO);
 }
