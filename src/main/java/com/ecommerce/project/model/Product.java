@@ -30,18 +30,18 @@ public class Product {
     private String description;
     private String image;
     private Integer quantity;
-    private double price;
-    private double discount;
-    private double specialPrice;
+    private Double price;
+    private Double discount;
+    private Double specialPrice;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
-    private List<CartItems> products = new ArrayList<>();
-
     @ManyToOne
     @JoinColumn(name = "seller_id")
     private User user;
+
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    private List<CartItems> products = new ArrayList<>();
 }
