@@ -37,7 +37,5 @@ public class AuthUtil {
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + authentication.getName()));
         return user;
 
-    }
-
-
+    }   
 }

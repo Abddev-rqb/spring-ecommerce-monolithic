@@ -6,10 +6,6 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data
@@ -26,28 +22,28 @@ public class Address {
     private String street;
 
     @NotBlank
-    @Size(min = 5, message = "Enter atleast 5 characters to the street field")
+    @Size(min = 5, message = "Enter atleast 5 characters to the building field")
     private String buildingName;
 
     @NotBlank
-    @Size(min = 3, message = "Enter atleast 3 characters to the street field")
+    @Size(min = 3, message = "Enter atleast 3 characters to the city field")
     private String city;
 
     @NotBlank
-    @Size(min = 3, message = "Enter atleast 3 characters to the street field")
+    @Size(min = 3, message = "Enter atleast 3 characters to the state field")
     private String state;
 
     @NotBlank
-    @Size(min = 3, message = "Enter atleast 3 characters to the street field")
+    @Size(min = 3, message = "Enter atleast 3 characters to the country field")
     private String country;
 
     @NotBlank
-    @Size(min = 6, message = "Enter atleast 6 characters to the street field")
+    @Size(min = 5, message = "Enter atleast 5 characters to the pincode field")
     private String pincode;
 
-    @ToString.Exclude
-    @ManyToMany(mappedBy = "addresses")
-    private List<User> user = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Address(String street, String buildingName, String city, String state, String country, String pincode) {
         this.street = street;
