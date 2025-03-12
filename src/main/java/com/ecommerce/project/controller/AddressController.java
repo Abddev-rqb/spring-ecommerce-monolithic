@@ -29,15 +29,22 @@ public class AddressController {
         return new ResponseEntity<>(savedAddressDTO, HttpStatus.CREATED);
     }
 
-    @GetMapping("user/addresses")
+    @GetMapping("/user/addresses")
     public ResponseEntity<List<AddressDTO>> getAddresses(){
         List<AddressDTO> addressList = addressService.getAddresses();
         return new ResponseEntity<>(addressList, HttpStatus.OK);
     }
 
-    @GetMapping("address/{addressId}")
+    @GetMapping("/address/{addressId}")
     public ResponseEntity<AddressDTO> getAddressById(@PathVariable Long addressId){
         AddressDTO addressDTO = addressService.getAddressById(addressId);
         return new ResponseEntity<>(addressDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/useraddress")
+    public ResponseEntity<List<AddressDTO>> getAddressByUser(){
+        User user = authUtil.loggedInUser();
+        List<AddressDTO> addressDTOS = addressService.getAddressByUser(user);
+        return new ResponseEntity<>(addressDTOS, HttpStatus.OK);
     }
 }
