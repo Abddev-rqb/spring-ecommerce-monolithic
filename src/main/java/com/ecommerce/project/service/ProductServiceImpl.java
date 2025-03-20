@@ -43,6 +43,9 @@ public class ProductServiceImpl implements ProductService{
     @Autowired
     private CartService cartService;
 
+    @Value("${image.base.url}")
+    private String imagePathUrl;
+
     @Override
     public ProductDTO addProduct(Long categoryId, ProductDTO productDTO){
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
@@ -75,7 +78,11 @@ public class ProductServiceImpl implements ProductService{
         if (products1.isEmpty()){
             throw new APIException("No products are available");
         }
-        List<ProductDTO> productDTOS = products.stream().map(product -> modelMapper.map(product, ProductDTO.class)).toList();
+        List<ProductDTO> productDTOS = products.stream().map(product -> {
+            ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+            productDTO.setImage(constructImageUrl(product.getImage()));
+            return productDTO;
+        }).toList();
         ProductResponse response = new ProductResponse();
         response.setContent(productDTOS);
         response.setPageNumber(products.getNumber());
@@ -84,6 +91,10 @@ public class ProductServiceImpl implements ProductService{
         response.setTotalPages(products.getTotalPages());
         response.setLastPage(products.isLast());
         return response;
+    }
+
+    private String constructImageUrl(String imageName){
+        return imagePathUrl.endsWith("/") ? imagePathUrl+imageName : imagePathUrl+"/"+imageName;
     }
 
     @Override
