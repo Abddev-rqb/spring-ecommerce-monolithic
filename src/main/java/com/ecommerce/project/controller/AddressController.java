@@ -23,39 +23,39 @@ public class AddressController {
     @Autowired
     private AddressService addressService;
 
-    @PostMapping("/addresses")
+    @PostMapping("/public/addresses")
     public ResponseEntity<AddressDTO> createAddress(@Valid @RequestBody AddressDTO addressDTO){
         User user = authUtil.loggedInUser();
         AddressDTO savedAddressDTO = addressService.createAddress(addressDTO, user);
         return new ResponseEntity<>(savedAddressDTO, HttpStatus.CREATED);
     }
 
-    @GetMapping("/user/addresses")
+    @GetMapping("/public/user/addresses")
     public ResponseEntity<List<AddressDTO>> getAddresses(){
         List<AddressDTO> addressList = addressService.getAddresses();
         return new ResponseEntity<>(addressList, HttpStatus.OK);
     }
 
-    @GetMapping("/address/{addressId}")
+    @GetMapping("/public/address/{addressId}")
     public ResponseEntity<AddressDTO> getAddressById(@PathVariable Long addressId){
         AddressDTO addressDTO = addressService.getAddressById(addressId);
         return new ResponseEntity<>(addressDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/useraddress")
+    @GetMapping("/public/useraddress")
     public ResponseEntity<List<AddressDTO>> getAddressByUser(){
         User user = authUtil.loggedInUser();
         List<AddressDTO> addressDTOS = addressService.getAddressByUser(user);
         return new ResponseEntity<>(addressDTOS, HttpStatus.OK);
     }
 
-    @PutMapping("addresses/{addressId}")
+    @PutMapping("/public/addresses/{addressId}")
     public ResponseEntity<AddressDTO> updateAddress(@PathVariable Long addressId, @RequestBody AddressDTO addressDTO){
         AddressDTO addressDTO1 = addressService.updateAddress(addressId, addressDTO);
         return new ResponseEntity<>(addressDTO1, HttpStatus.OK);
     }
 
-    @DeleteMapping("addresses/{addressId}")
+    @DeleteMapping("/public/addresses/{addressId}")
     public ResponseEntity<String> deleteAddressById(@PathVariable Long addressId){
         String address = addressService.deleteAddressById(addressId);
         return new ResponseEntity<>(address, HttpStatus.OK);
