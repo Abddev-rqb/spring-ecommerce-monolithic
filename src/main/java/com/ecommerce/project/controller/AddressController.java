@@ -49,13 +49,13 @@ public class AddressController {
         return new ResponseEntity<>(addressDTOS, HttpStatus.OK);
     }
 
-    @PutMapping("address/{addressId}")
+    @PutMapping("addresses/{addressId}")
     public ResponseEntity<AddressDTO> updateAddress(@PathVariable Long addressId, @RequestBody AddressDTO addressDTO){
         AddressDTO addressDTO1 = addressService.updateAddress(addressId, addressDTO);
         return new ResponseEntity<>(addressDTO1, HttpStatus.OK);
     }
 
-    @DeleteMapping("address/{addressId}")
+    @DeleteMapping("addresses/{addressId}")
     public ResponseEntity<String> deleteAddressById(@PathVariable Long addressId){
         String address = addressService.deleteAddressById(addressId);
         return new ResponseEntity<>(address, HttpStatus.OK);
