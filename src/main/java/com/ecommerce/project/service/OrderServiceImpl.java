@@ -46,13 +46,12 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDTO placeOrder(String emailId, Long addressId, String paymentMethod, String pgName, String pgPaymentId, String pgStatus, String pgResponseMessage) {
         Cart cart = cartRepository.findCartByEmail(emailId);
+        if (cart == null) {
+            throw new ResourceNotFoundException("Cart", "email", emailId);
+        }
         List<CartItems> cartItems = cart.getCartItems();
         if (cartItems.isEmpty()) {
             throw new APIException("Cart is empty");
-        }
-
-        if (cart == null) {
-            throw new ResourceNotFoundException("Cart", "email", emailId);
         }
 
         Address address = addressRepository.findById(addressId).orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
